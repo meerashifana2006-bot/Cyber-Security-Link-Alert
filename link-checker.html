@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cyber Security Link Checker</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #aaa;
+      width: 400px;
+      text-align: center;
+    }
+    .popup-alert {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #d32f2f;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 999;
+      animation: blink 1s infinite;
+      box-shadow: 0 0 20px red;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+    @media screen and (max-width: 600px) {
+      body { padding: 10px; }
+      .box, input, button { width: 100% !important; box-sizing: border-box; padding: 15px; }
+      input, button { font-size: 16px; }
+      h2 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Check if a Link is Safe</h2>
+    <input type="text" id="linkInput" placeholder="Paste link here"><br><br>
+    <button onclick="checkLink()">Check</button>
+    <p id="statusMsg"></p>
+    <div id="alertBox"></div>
+  </div>
+
+  <div class="popup-alert" id="popupAlert">⚠ WARNING: Unsafe Link Detected!</div>
+
+  <script>
+    let blinkInterval;
+
+    const suspiciousDomains = [
+      "bit.ly", "tinyurl.com", "freegift.com", "winbig", "giveaway", 
+      "verify-now", "login-info", "secure-update", "paypal-login", "bank-confirmation"
+    ];
+
+    const suspiciousKeywords = [
+      "phishing", "scam", "verify", "password", "login", "free", 
+      "offer", "click", "update", "confirm"
+    ];
+
+    function getCategory(link) {
+      if (link.includes("phishing")) return "Phishing";
+      if (link.includes("scam")) return "Scam";
+      if (link.includes(".gov")) return "Government";
+      if (link.includes("facebook") || link.includes("instagram")) return "Social Media";
+      return "Other";
+    }
+
+    function isLinkSuspicious(link) {
+      const lowerLink = link.toLowerCase();
+      return suspiciousDomains.some(domain => lowerLink.includes(domain)) ||
+             suspiciousKeywords.some(keyword => lowerLink.includes(keyword));
+    }
+
+    function startTabBlink() {
+      let visible = true;
+      blinkInterval = setInterval(() => {
+        document.title = visible ? "⚠ Unsafe Link Found!" : "Cyber Security Alert";
+        visible = !visible;
+      }, 800);
+    }
+
+    function stopTabBlink() {
+      clearInterval(blinkInterval);
+      document.title = "Cyber Security Link Checker";
+    }
+
+    function showPopup() {
+      const popup = document.getElementById("popupAlert");
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 4000);
+    }
+
+    function checkLink() {
+      const link = document.getElementById("linkInput").value.trim();
+      const statusMsg = document.getElementById("statusMsg");
+      const alertBox = document.getElementById("alertBox");
+
+      if (!link) {
+        alert("Please enter a link!");
+        return;
+      }
+
+      const isSafe = !isLinkSuspicious(link);
+      const status = isSafe ? "SAFE" : "UNSAFE";
+      const category = getCategory(link);
+      const now = new Date();
+
+      const history = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+      history.push({
+        link: link,
+        status: status,
+        category: category,
+        date: now.toLocaleDateString(),
+        time: now.toLocaleTimeString()
+      });
+      localStorage.setItem("scanHistory", JSON.stringify(history));
+
+      statusMsg.innerText = `This link is ${status}\nCategory: ${category}`;
+
+      if (!isSafe) {
+        alertBox.innerHTML =` <div class="danger-alert">⚠ WARNING: Unsafe Link Detected!</div>`;
+        startTabBlink();
+        showPopup();
+      } else {
+        alertBox.innerHTML = "";
+        stopTabBlink();
+      }
+    }
+
+    window.onblur = () => clearInterval(blinkInterval);
+  </script>
+</body>
+</html>

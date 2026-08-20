@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fake Link Generator</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #fff3e0;
+      padding: 30px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    h2 {
+      color: #e65100;
+    }
+    .fake-link {
+      color: #d32f2f;
+      text-decoration: underline;
+      cursor: pointer;
+      display: block;
+      margin: 8px 0;
+    }
+    .fake-link:hover {
+      color: #b71c1c;
+    }
+    .alert {
+      background: #ffebee;
+      color: #c62828;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-weight: bold;
+      animation: shake 0.4s infinite alternate;
+    }
+    @keyframes shake {
+      from { transform: translateX(-2px); }
+      to { transform: translateX(2px); }
+    }
+  </style>
+</head>
+<body>
+  <h2>🎭 Fake Phishing Link Simulation</h2>
+  <p>This page shows fake scam-like links for education purposes only.</p>
+
+  <div class="card">
+    <span class="fake-link" onclick="showWarning('http://update-bank-login.verification.ru')">
+      http://update-bank-login.verification.ru
+    </span>
+    <span class="fake-link" onclick="showWarning('http://free-gift-amazon.co.com')">
+      http://free-gift-amazon.co.com
+    </span>
+    <span class="fake-link" onclick="showWarning('http://verify-facebook-login.info')">
+      http://verify-facebook-login.info
+    </span>
+    <span class="fake-link" onclick="showWarning('http://claim-your-prize.in.net')">
+      http://claim-your-prize.in.net
+    </span>
+    <span class="fake-link" onclick="showWarning('http://atm-reset-confirm.ru')">
+      http://atm-reset-confirm.ru
+    </span>
+  </div>
+
+  <div id="warningBox"></div>
+
+  <script>
+    function showWarning(link) {
+      document.getElementById("warningBox").innerHTML =
+        `<div class="alert">⚠ WARNING: This is a fake phishing link!\nDo NOT trust links like this: ${link}</div>`;
+      document.title = "⚠ Fake Link Triggered!";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OTP Verification</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #fce4ec;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #ccc;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 15px;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #00796b;
+      color: white;
+      font-weight: bold;
+    }
+    .msg {
+      margin-top: 10px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+<body onload="generateOTP()">
+  <div class="box">
+    <h2>🔐 OTP Verification</h2>
+    <p>We sent an OTP to your registered device (simulated).</p>
+    <p><b>OTP:</b> <span id="otpDisplay"></span></p>
+    <input type="text" id="userOTP" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify</button>
+    <div class="msg" id="otpMsg"></div>
+  </div>
+
+  <script>
+    let generatedOTP = "";
+
+    function generateOTP() {
+      generatedOTP = Math.floor(1000 + Math.random() * 9000).toString(); // 4-digit
+      document.getElementById("otpDisplay").innerText = generatedOTP;
+    }
+
+    function verifyOTP() {
+      const userInput = document.getElementById("userOTP").value;
+      const msg = document.getElementById("otpMsg");
+
+      if (userInput === generatedOTP) {
+        msg.style.color = "green";
+        msg.textContent = "✅ OTP Verified!";
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
+      } else {
+        msg.textContent = "❌ Incorrect OTP. Try again.";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scan Report</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f1f8e9;
+      padding: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px #ccc;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #388e3c;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #e8f5e9;
+    }
+    tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+   @media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .box, .login-box, .card, table {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 15px;
+  }
+
+  input, button {
+    font-size: 16px;
+  }
+
+  table th, table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  h2, h3 {
+    font-size: 20px;
+  }
+}
+  </style>
+</head>
+<body>
+  <h2>📜 Scanned Links History</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Link</th>
+        <th>Status</th>
+        <th>Category</th>
+        <th>Date</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody id="reportBody"></tbody>
+  </table>
+
+  <button onclick="exportCSV()">⬇ Export as CSV</button>
+
+  <div id="graph">
+    <h3>📊 Safe vs Unsafe Link Count</h3>
+    <div id="safeBar" class="bar"></div>
+    <div id="unsafeBar" class="bar unsafe"></div>
+  </div>
+
+  <script>
+    function loadReport() {
+      let reportBody = document.getElementById("reportBody");
+      reportBody.innerHTML = "";
+
+      let history = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+      let safeCount = 0, unsafeCount = 0;
+
+      history.forEach(item => {
+    let row = `<tr>
+    <td>${item.link}</td>
+    <td>${item.status}</td>
+    <td>${item.category || "N/A"}</td>
+    <td>${item.date}</td>
+    <td>${item.time}</td>
+  </tr>`;
+  reportBody.innerHTML += row;
+
+  if (item.status.trim() === "SAFE") {
+    safeCount++;
+  } else if (item.status.trim() === "UNSAFE") {
+    unsafeCount++;
+  }
+});
+
+      // Show graph bars
+      document.getElementById("safeBar").style.width = safeCount * 20 + "px";
+      document.getElementById("safeBar").innerText = "✅ SAFE: " + safeCount;
+
+      document.getElementById("unsafeBar").style.width = unsafeCount * 20 + "px";
+      document.getElementById("unsafeBar").innerText = "❌ UNSAFE: " + unsafeCount;
+    }
+
+    function exportCSV() {
+      let history = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+      if (history.length === 0) {
+        alert("No history to export.");
+        return;
+      }
+
+      let csv = "Link,Status,Category,Date,Time\n";
+      history.forEach(item => {
+        csv += `${item.link},${item.status},${item.category || "N/A"},${item.date},${item.time}\n`;
+      });
+
+      let blob = new Blob([csv], { type: "text/csv" });
+      let url = URL.createObjectURL(blob);
+      let a = document.createElement("a");
+      a.href = url;
+      a.download = "scan_report.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    window.onload = loadReport;
+    setInterval(loadReport, 2000);
+  </script>
+</body>
+</html>

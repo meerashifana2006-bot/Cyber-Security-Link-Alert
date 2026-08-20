@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: var(--bg, #fce4ec);
+      color: var(--text, black);
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+    .btn {
+      display: block;
+      background: #ec407a;
+      color: white;
+      padding: 15px;
+      margin: 10px 0;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .dark-mode {
+      --bg: #1e1e1e;
+      --text: white;
+    }
+  </style>
+</head>
+<body onload="checkLogin(); applyTheme();">
+  <h2>Cyber Security Dashboard</h2>
+  <a href="link-checker.html" class="btn">🔗 Link Checker</a>
+  <a href="report.html" class="btn">📜 View Report</a>
+  <a href="biodata.html" class="btn">🧑‍💻 User Biodata</a>
+  <a href="qr-simulator.html" class="btn">🧑‍💻QR Code Scanner</a>
+  <a href="admin.html" class="btn">🛠 Admin Panel</a>
+  <a href="fake-links.html" class="btn">🎭 Fake Link Examples</a>
+  <a href="help.html" class="btn">💡 Help</a>
+  <a href="NEWW.html" class="btn">ℹ About</a>
+  <button class="btn" onclick="toggleDarkMode()">🌓 Toggle Dark Mode</button>
+  <button class="btn" onclick="logout()">🚪 Logout</button>
+
+  <script>
+    function checkLogin() {
+      if (localStorage.getItem("loggedIn") === "true") {
+        alert("Please login first.");
+        window.location.href = "login.html";
+      }
+    }
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("email");
+      window.location.href = "login.html";
+    }
+
+    function toggleDarkMode() {
+      let dark = document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", dark ? "dark" : "light");
+    }
+
+    function applyTheme() {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+    }
+  </script>
+</body>
+</html>

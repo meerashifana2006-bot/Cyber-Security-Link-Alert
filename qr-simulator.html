@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Code Text Checker</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #e3f2fd;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .scanner-box {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #ccc;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #1565c0;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f8e9;
+      border-radius: 5px;
+      box-shadow: inset 0 0 5px #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="scanner-box">
+    <h2>QR Text Security Checker</h2>
+    <p>Paste the text or URL decoded from QR code below:</p>
+    <input type="text" id="qrInput" placeholder="Paste QR text here">
+    <button onclick="scanQR()">Check</button>
+    <div class="output" id="qrResult"></div>
+  </div>
+
+  <script>
+    function scanQR() {
+      const qrData = document.getElementById("qrInput").value.trim();
+      const resultBox = document.getElementById("qrResult");
+
+      if (!qrData) {
+        resultBox.innerHTML = "⚠ Please enter some text to scan.";
+        return;
+      }
+
+      const lower = qrData.toLowerCase();
+      const isUnsafe = lower.includes("phishing") || lower.includes("scam") || lower.includes("login") || lower.includes("fraud");
+      const category = lower.includes(".gov") ? "Government"
+                      : lower.includes("facebook") || lower.includes("instagram") ? "Social Media"
+                      : lower.includes("bank") || lower.includes("account") ? "Financial"
+                      : "General";
+
+      resultBox.innerHTML = isUnsafe
+        ?` <b>⚠ UNSAFE:</b> Suspicious content detected.<br><b>Category:</b> ${category}<br><br>${qrData}`
+        : `<b>✅ SAFE:</b> No harmful keywords found.<br><b>Category:</b> ${category}<br><br>${qrData}`;
+    }
+  </script>
+</body>
+</html>

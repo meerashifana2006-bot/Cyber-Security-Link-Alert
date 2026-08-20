@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #e8f5e9;
+      padding: 30px;
+    }
+    h2 {
+      color: #1b5e20;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #b71c1c;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #388e3c;
+      color: white;
+    }
+    #graph {
+  margin-top: 20px;
+}
+
+.bar {
+  height: 30px;
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  line-height: 30px;
+  border-radius: 5px;
+}
+
+.bar.unsafe {
+  background-color: red;
+}
+    @media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .box, .login-box, .card, table {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 15px;
+  }
+
+  input, button {
+    font-size: 16px;
+  }
+
+  table th, table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  h2, h3 {
+    font-size: 20px;
+  }
+}
+  </style>
+</head>
+<body onload="loadAdminData()">
+  <h2>🛠 Admin Panel - Cyber Security Monitor</h2>
+
+  <div class="card">
+    <p><b>Total Links Scanned:</b> <span id="totalCount"></span></p>
+    <p><b>Total SAFE:</b> <span id="safeCount"></span></p>
+    <p><b>Total UNSAFE:</b> <span id="unsafeCount"></span></p>
+  </div>
+
+  <div class="card">
+    <h3>📌 Last 5 Scanned Links</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Link</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="last5"></tbody>
+    </table>
+  </div>
+
+  <button onclick="clearHistory()">🗑 Clear All Scan History</button>
+
+  <script>
+    function loadAdminData() {
+  const data = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+  document.getElementById("totalCount").textContent = data.length;
+
+  let safe = 0, unsafe = 0;
+  data.forEach(item => {
+    const status = item.status.trim();
+    if (status === "SAFE") safe++;
+    else if (status === "UNSAFE") unsafe++;
+  });
+
+  document.getElementById("safeCount").textContent = safe;
+  document.getElementById("unsafeCount").textContent = unsafe;
+
+  // Show last 5 entries
+  let recent = data.slice(-5).reverse();
+  let last5 = document.getElementById("last5");
+  last5.innerHTML = "";
+  recent.forEach(entry => {
+    last5.innerHTML += `<tr>
+      <td>${entry.link}</td>
+      <td>${entry.status}</td>
+      <td>${entry.date}</td>
+      <td>${entry.time}</td>
+    </tr>`;
+  });
+}
+
+    function clearHistory() {
+      if (confirm("Are you sure you want to delete all scan history?")) {
+        localStorage.removeItem("scanHistory");
+        alert("All history cleared.");
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
